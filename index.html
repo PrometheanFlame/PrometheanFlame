@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cap'n Chat | Best AI in all the 7 Seas!</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.0.2/css/bootstrap.min.css">
+    <style>
+        :root {
+            --rock-bg-color: #CED4DA;
+            --light-bg-color: #FDF5E6;
+            --pirate-bg-color: #F8D44C;
+            --ocean-bg-color: #007BFF;
+            --genius-bg-color: #28A745;
+        }
+
+        body {
+            background-color: black;
+            color: white;
+        }
+
+        body.rock-mode {
+            background-color: var(--rock-bg-color);
+            color: black;
+            font-family: 'Times New Roman', serif;
+        }
+
+        body.light-mode {
+            background-color: var(--light-bg-color);
+            color: black;
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        body.pirate-mode {
+            background-color: var(--pirate-bg-color);
+            color: black;
+            font-family: 'Pirata One', cursive;
+        }
+
+        body.ocean-mode {
+            background-color: var(--ocean-bg-color);
+            color: white;
+            font-family: 'Comic Sans MS', cursive;
+        }
+
+        body.genius-mode {
+            background-color: var(--genius-bg-color);
+            color: white;
+            font-family: 'Courier', monospace;
+        }
+
+        .dropdown-menu {
+            background-color: black;
+            width: auto;
+            min-width: unset;
+        }
+
+        .dropdown-menu-end {
+            right: 0;
+            left: auto;
+        }
+
+        .dropdown-item {
+            color: white;
+        }
+
+        .dropdown-divider {
+            background-color: white;
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1;
+        }
+
+        .dropdown-btn,
+        .style-btn {
+            border: none;
+            background-color: transparent;
+            color: white;
+        }
+
+        .dropdown-btn:hover,
+        .style-btn:hover {
+            color: white;
+            text-shadow: 0 0 10px white;
+        }
+
+        footer {
+            bottom: 0;
+            width: 100%;
+        }
+
+        .fun-bouncing-text {
+            color: black;
+            font-family: 'Courier', monospace;
+            text-align: center;
+            background-color: white;
+            padding: 10px;
+            border-radius: 10px;
+            animation: bounce 1.75s infinite;
+        }
+
+        @keyframes bounce {
+            0% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        li a {
+            text-decoration: none;
+            color: white;
+        }
+
+        li a:hover {
+            text-decoration: underline;
+            color: white;
+        }
+
+        .ai-image-generators,
+        .ai-text-generators {
+            list-style-type: none;
+        }
+
+        .ai-image-generators li:before {
+            content: '🎨';
+            margin-right: 0.5em;
+        }
+
+        .ai-text-generators li:before {
+            content: '🧠';
+            margin-right: 0.5em;
+        }
+    </style>
+    <script>
+        function matchPaddingTop() {
+            const headerHeight = document.querySelector('.navbar').offsetHeight;
+            document.body.style.paddingTop = headerHeight + 'px';
+        }
+
+        // Call the function when the page loads
+        window.addEventListener('load', matchPaddingTop);
+
+        // Call the function when the window is resized
+        window.addEventListener('resize', matchPaddingTop);
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script>
+        function setBody(mode) {
+            document.body.classList.remove('rock-mode', 'light-mode', 'pirate-mode', 'ocean-mode', 'genius-mode');
+            if (mode != '')
+                document.body.classList.add(mode);
+        }
+
+        function setHeaderOrFooter(_item, _bg, textColor) {
+            _item.classList.remove('bg-dark', 'bg-warning', 'bg-primary', 'bg-secondary', 'bg-success', 'bg-light', 'navbar-dark', 'navbar-light');
+            _item.classList.add(_bg);
+
+            const dropdownButtons = _item.querySelectorAll('.dropdown-toggle');
+
+            dropdownButtons.forEach(button => {
+                if (textColor === 'white') {
+                    button.style.color = 'white';
+                } else {
+                    button.style.color = 'black';
+                }
+            });
+        }
+
+        function setDropdowns(txtColor, bgColor) {
+            document.querySelectorAll('.dropdown-item').forEach(item => {
+                item.style.color = txtColor;
+            });
+            document.querySelectorAll('.dropdown-menu').forEach(item => {
+                item.style.backgroundColor = bgColor;
+                item.style.width = 'auto';
+                item.style.minWidth = 'unset';
+            });
+            document.querySelectorAll('.dropdown-divider').forEach(item => {
+                item.style.backgroundColor = txtColor;
+            });
+        }
+
+        function setFunBouncingText(txtColor, bgColor) {
+            document.querySelectorAll('.fun-bouncing-text').forEach(item => {
+                item.style.color = txtColor;
+                item.style.backgroundColor = bgColor;
+            });
+        }
+
+        function setLinks(txtColor) {
+            document.querySelectorAll('li a, li a:hover').forEach(item => {
+                item.style.color = txtColor;
+            });
+        }
+
+        function setMode(mode) {
+            const header = document.querySelector('.navbar');
+            const footer = document.querySelector('footer');
+            const emojiButton = document.querySelector('.style-btn');
+
+
+            if (mode === '🗿') {
+                const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--rock-bg-color');
+
+                setBody('rock-mode');
+                setHeaderOrFooter(header, 'bg-secondary', 'black');
+                setHeaderOrFooter(footer, 'bg-secondary', 'black');
+                setDropdowns(bgColor, 'black');
+
+                emojiButton.innerHTML = '🗿';
+
+                setFunBouncingText(bgColor, 'black');
+                setLinks('black');
+
+            } else if (mode === '🌞') {
+                const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--light-bg-color');
+
+                setBody('light-mode');
+                setHeaderOrFooter(header, 'bg-light', 'black');
+                setHeaderOrFooter(footer, 'bg-light', 'black');
+                setDropdowns(bgColor, 'black');
+
+                emojiButton.innerHTML = '🌞';
+
+                setFunBouncingText(bgColor, 'black');
+                setLinks('black');
+
+            } else if (mode === '🏴‍☠️') {
+                const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--pirate-bg-color');
+
+                setBody('pirate-mode');
+                setHeaderOrFooter(header, 'bg-warning', 'black');
+                setHeaderOrFooter(footer, 'bg-warning', 'black');
+                setDropdowns(bgColor, 'black')
+
+                emojiButton.innerHTML = '🏴‍☠️';
+
+                setFunBouncingText(bgColor, 'black');
+                setLinks('black');
+
+            } else if (mode === '🌊') {
+                const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--ocean-bg-color');
+
+                setBody('ocean-mode');
+                setHeaderOrFooter(header, 'bg-primary', 'white');
+                setHeaderOrFooter(footer, 'bg-primary', 'white');
+                setDropdowns(bgColor, 'white')
+
+                emojiButton.innerHTML = '🌊';
+
+                setFunBouncingText(bgColor, 'white');
+                setLinks('white');
+
+            } else if (mode === '🧠') {
+                const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--genius-bg-color');
+
+                setBody('genius-mode');
+                setHeaderOrFooter(header, 'bg-success', 'white');
+                setHeaderOrFooter(footer, 'bg-success', 'white');
+                setDropdowns(bgColor, 'white')
+
+                emojiButton.innerHTML = '🧠';
+
+                setFunBouncingText(bgColor, 'white');
+                setLinks('white');
+
+            } else {
+                setBody('')
+                setHeaderOrFooter(header, 'bg-dark', 'white');
+                setHeaderOrFooter(footer, 'bg-dark', 'white');
+                setDropdowns('black', 'white')
+
+                emojiButton.innerHTML = '🌙';
+
+                setFunBouncingText('black', 'white');
+                setLinks('white');
+
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="dropdown">
+                    <!-- GAME DROPDOWN -->
+                    <button class="nav-link dropdown-toggle dropdown-btn" href="#" id="gameDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        ⚓ Cap'n Chat
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="gameDropdown">
+                        <a class="dropdown-item" href="#">🧙‍♂️ Word Wizards</a>
+                        <a class="dropdown-item" href="#">🧞‍♀️ TriviAI</a>
+                        <a class="dropdown-item" href="#">🤖 Who's the robot?</a>
+                        <a class="dropdown-item" href="#">🦜 My AI Group Chat</a>
+                        <hr class="dropdown-divider">
+                        <a class="dropdown-item" href="#">💾 The Archive</a>
+                        <a class="dropdown-item" href="#">🪦 The Ghostyard</a>
+                    </div>
+                </div>
+                <div>
+                    <!-- GAME BANNER -->
+                    <img src="./Graphics/top-game-banner-capnchat.png" class="img-fluid">
+                </div>
+                <div class="dropdown">
+                    <!-- ACCOUNT DROPDOWN -->
+                    <div class="user-container">
+                        <button class="nav-link dropdown-toggle dropdown-btn" href="#" id="accountDropdown"
+                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            👤
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="accountDropdown">
+                            <a class="dropdown-item text-end" href="#">Account ✏️</a>
+                            <a class="dropdown-item text-end" href="#">Personas 👁️</a>
+                            <hr class="dropdown-divider">
+                            <a class="dropdown-item text-end" href="#">Sign Out ❌</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <!-- STYLE DROPDOWN -->
+                    <button class="nav-link dropdown-toggle style-btn" href="#" id="styleDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        🌙
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="styleDropdown">
+                        <a class="dropdown-item" href="#" onclick="setMode(this.innerHTML)">🌙</a>
+                        <a class="dropdown-item" href="#" onclick="setMode(this.innerHTML)">🗿</a>
+                        <a class="dropdown-item" href="#" onclick="setMode(this.innerHTML)">🌞</a>
+                        <a class="dropdown-item" href="#" onclick="setMode(this.innerHTML)">🏴‍☠️</a>
+                        <a class="dropdown-item" href="#" onclick="setMode(this.innerHTML)">🌊</a>
+                        <a class="dropdown-item" href="#" onclick="setMode(this.innerHTML)">🧠</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <div class="container-fluid" style="overflow: auto;">
+            <div class="row">
+                <div class="col-md-2 vertical-side-banner-ad">
+                    <img src="./Graphics/vertical-side-banner-ad-example.png" alt="Vertical Image" style="width: 100%;">
+                </div>
+                <div class="col-md-8">
+                    <h2>🔱 Ahoy, Matey!</h2>
+                    <p>
+                        Welcome to Cap'n Chat, the first ever gaming platform powered by AI groupchats.
+                    </p>
+                    <h2 class="fun-bouncing-text">groupchats + chatbots = capnchat</h2>
+                    <p>
+                        Not just text-to-text AI, but text-to-image AI, too!
+                        </br>
+                        Simply tap a message, select one of three AI options, and generate images right from the
+                        groupchat:
+                    <ul class="ai-image-generators">
+                        <li><a href="https://stability.ai/">Stability AI</a> through <a
+                                href="https://octoml.ai/">OctoML's</a> <i><a
+                                    href="https://octoml.ai/models/stable-diffusion/">Stable Diffusion</i></a></li>
+                        <li><a href="https://openai.com/">OpenAI's</a> <i><a href="https://openai.com/dall-e-2">DALL-E
+                                    2</i></a></li>
+                        <li><a href="https://deepdreamgenerator.com/">Aifnet Ltd.'s <i>Deep Dream Generator</i></a></li>
+                    </ul>
+                    </p>
+                    <h3>👤 Personas</h3>
+                    <p>
+                        Play with any character you can dream of...
+                        </br>
+                        Simply choose a name and bio, generate a profile picture, and begin playing to unlock rewards
+                        and customize your personas.
+                        </br>
+                        Users can also play alongside their personas, powered by one of two AI-brain options:
+                    <ul class="ai-text-generators">
+                        <li><a href="https://openai.com/">OpenAI's</a> <i><a
+                                    href="https://platform.openai.com/docs/models/gpt-3-5">GPT-3.5 Turbo</a></i></li>
+                        <li><a href="https://bard.google.com/">Google Bard's</a> <i><a
+                                    href="https://developers.generativeai.google/">Bison</a></i></li>
+                    </ul>
+                    </p>
+                    <h3>🧞‍♀️ Wishes</h3>
+                    <p>
+                        Instead of putting unlockables behind "pay walls", we've put them behind "share walls"
+                        in an attempt to make the full Cap'n Chat experience more accessible and more fun
+                        - because more players means more fun!
+                    <h2 class="fun-bouncing-text">
+                        <i>
+                            We wish you'd share our games,
+                            so in exchange,
+                            we'll grant a few wishes of our own!
+                        </i>
+                    </h2>
+                    Players start off with three wishes, and there are two ways to get more!
+                    </p>
+                    <h3>⚓ The Cap'n Chat Crew</h3>
+                    <p>
+                        Each game title is personified through Cap'n Chat's merry crew!
+                    <ul>
+                        <li>Monty, <i>Word Wizards</i></li>
+                        <li>Ginne, <i>TriviAI</i></li>
+                        <li>Robert, <i>Who's the robot? The Turing Test Game</i></li>
+                        <li>Audrey, <i>My AI Group Chat</i></li>
+                    </ul>
+                    </p>
+                </div>
+                <div class="col-md-2 vertical-side-banner-ad">
+                    <img src="./Graphics/vertical-side-banner-ad-example.png" alt="Vertical Image" style="width: 100%;">
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="bg-dark text-center py-3">
+        <div class="container">
+            <p>&copy; 2023 KMF HOLDINGS LLC. All rights reserved.</p>
+        </div>
+    </footer>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var user = getSignedInUser();
+
+            if (user) {
+                // Display dropdown with username on the right side of the profile picture emoji
+                displayDropdown(user);
+            } else {
+                // Display login button
+                displaySignInButton();
+            }
+        });
+
+        function getSignedInUser() {
+            var userJson = getCookie("user");
+            console.log('SIGNED-IN USER -> ' + userJson);
+            if (userJson) {
+                try {
+                    var user = JSON.parse(userJson);
+                    console.log(user['id']);
+                    console.log(user['name']);
+                    console.log(user['token']);
+                    return user;
+                } catch (error) {
+                    console.error("Error parsing user JSON:", error);
+                }
+            }
+            return null;
+        }
+
+        function getCookie(name) {
+            var cookies = document.cookie.split("; ");
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].split("=");
+                if (cookie[0] === name) {
+                return cookie[1];
+                }
+            }
+            return null;
+        }
+
+
+        function displayDropdown(user) {
+            var userContainer = document.querySelector(".user-container");
+            userContainer.innerHTML = "";
+
+            var dropdownButton = document.createElement("button");
+            dropdownButton.classList.add("nav-link", "dropdown-toggle", "dropdown-btn");
+            dropdownButton.href = "#";
+            dropdownButton.id = "accountDropdown";
+            dropdownButton.setAttribute("role", "button");
+            dropdownButton.setAttribute("data-bs-toggle", "dropdown");
+            dropdownButton.setAttribute("aria-expanded", "false");
+            dropdownButton.textContent = "👤";
+            userContainer.appendChild(dropdownButton);
+
+            var dropdownMenu = document.createElement("div");
+            dropdownMenu.classList.add("dropdown-menu", "dropdown-menu-end");
+            dropdownMenu.setAttribute("aria-labelledby", "accountDropdown");
+            userContainer.appendChild(dropdownMenu);
+
+            var accountLink = document.createElement("a");
+            accountLink.classList.add("dropdown-item", "text-end");
+            accountLink.href = "#";
+            accountLink.textContent = "Account ✏️";
+            dropdownMenu.appendChild(accountLink);
+
+            var personasLink = document.createElement("a");
+            personasLink.classList.add("dropdown-item", "text-end");
+            personasLink.href = "#";
+            personasLink.textContent = "Personas 👁️";
+            dropdownMenu.appendChild(personasLink);
+
+            var divider = document.createElement("hr");
+            divider.classList.add("dropdown-divider");
+            dropdownMenu.appendChild(divider);
+
+            var signOutLink = document.createElement("a");
+            signOutLink.classList.add("dropdown-item", "text-end");
+            signOutLink.href = "#";
+            signOutLink.textContent = "Sign Out ❌";
+            dropdownMenu.appendChild(signOutLink);
+        }
+
+
+        function displaySignInButton() {
+            var userContainer = document.querySelector(".user-container");
+            userContainer.innerHTML = "";
+
+            var signInButton = document.createElement("button");
+            signInButton.textContent = "Sign In";
+            signInButton.style.margin = "10px";
+            signInButton.style.padding = "10px 20px";
+            signInButton.style.borderRadius = "5px";
+            signInButton.style.backgroundColor = "#ff4081";
+            signInButton.style.color = "#ffffff";
+            signInButton.style.fontSize = "16px";
+            signInButton.style.fontWeight = "bold";
+            signInButton.style.border = "none";
+            signInButton.style.cursor = "pointer";
+
+            userContainer.appendChild(signInButton);
+
+            // Add login button click event listener to perform login action
+            signInButton.addEventListener("click", performSignIn);
+        }
+
+
+        function performSignIn() {
+            var user = {
+                user_id: 12345,
+                username: "examplename",
+                token: "XXXXXXXXXXXXXXXX"
+            };
+            var expiryDate = new Date();
+            expiryDate.setDate(expiryDate.getDate() + 1);  // Set expiry date to 7 days from now
+            document.cookie = "user=JohnDoe; expires=" + expiryDate.toUTCString() + "; path=/";
+
+            console.log('USER -> ' + getCookie('user'))
+            location.reload();
+        }
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.0.2/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
